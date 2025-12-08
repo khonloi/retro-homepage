@@ -1,8 +1,5 @@
 import Icon from './Icon';
 import Folder from './Folder';
-import "../css/variables.css"
-import "../css/base.css"
-import "../css/components.css"
 import '../css/Explorer.css';
 
 const Explorer = ({ 

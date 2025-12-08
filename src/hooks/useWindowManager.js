@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { desktopItems } from "../config/programConfig";
+import { playSound } from '../utilities/sounds';
 
 export const useWindowManager = () => {
   const [minimizedWindows, setMinimizedWindows] = useState([]);
@@ -7,40 +8,7 @@ export const useWindowManager = () => {
   
   // Sound effects for window operations
   const playWindowSound = useCallback(async (soundType) => {
-    const baseUrl = import.meta.env.BASE_URL || '/';
-    const audioSources = [
-      `${baseUrl}sounds/${soundType}.mp3`,
-      `/sounds/${soundType}.mp3`,
-      `./sounds/${soundType}.mp3`,
-      `${baseUrl}sounds/maximize.mp3`, // Fallback to maximize sound
-    ];
-
-    const audio = new Audio();
-    audio.volume = 0.7;
-    
-    for (const source of audioSources) {
-      try {
-        console.log(`Attempting to play ${soundType} audio from: ${source}`);
-        audio.src = source;
-        
-        await new Promise((resolve, reject) => {
-          audio.oncanplaythrough = resolve;
-          audio.onerror = reject;
-          audio.load();
-        });
-        
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-          await playPromise;
-          console.log(`${soundType} sound played successfully from: ${source}`);
-          return;
-        }
-      } catch (error) {
-        console.warn(`Failed to play ${soundType} audio from ${source}:`, error);
-      }
-    }
-    
-    console.error(`All ${soundType} audio sources failed to play`);
+    await playSound(soundType);
   }, []);
   
   // Handle window operations

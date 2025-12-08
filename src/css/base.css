@@ -1,3 +1,12 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  cursor: var(--cursor-arrow);
+}
+
 body {
   background: linear-gradient(
   to bottom,
@@ -5,11 +14,8 @@ body {
   #926FBE, /* Middle */
   #E79AF2  /* Bottom */
 );
-  cursor: var(--cursor-arrow);
-}
-
-html {
-  cursor: var(--cursor-arrow);
+  min-width: 320px;
+  min-height: 100vh;
 }
 
 /* Global font settings */

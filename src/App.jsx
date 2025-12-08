@@ -3,8 +3,6 @@ import Desktop from './components/Desktop';
 // import ScreensaverManager from './components/ScreensaverManager';
 import { setCursorVariables } from './utilities/cursors';
 import './App.css';
-import './css/base.css';
-import './css/Desktop.css';
 
 function App() {
   const [isFullScreen, setIsFullScreen] = useState(false);

@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 import { useDragDrop } from "../hooks/useDragDrop";
-import "../css/variables.css";
-import "../css/base.css";
-import "../css/components.css";
 import "../css/Window.css";
 
 const Window = memo(({

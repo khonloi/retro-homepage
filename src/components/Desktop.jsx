@@ -12,9 +12,7 @@ import { useDesktop } from "../hooks/useDesktop";
 import { useLoadingScreen } from "../hooks/useLoadingScreen";
 import { useWindowManager } from "../hooks/useWindowManager";
 import { useShutdown } from "../hooks/useShutdown";
-import "../css/variables.css";
-import "../css/base.css";
-import "../css/components.css";
+import { playSound } from "../utilities/sounds";
 import "../css/Desktop.css";
 import "../css/Explorer.css";
 import "../css/Taskbar.css";
@@ -43,44 +41,6 @@ const Desktop = memo(({ onFullScreenChange }) => {
   const [hasStarted, setHasStarted] = useState(false);
   // Track loading state of each window
 
-  const playTaskbarSound = useCallback(async (soundType) => {
-    const baseUrl = import.meta.env.BASE_URL || "/";
-    const audioSources = [
-      `${baseUrl}sounds/${soundType}.mp3`,
-      `/sounds/${soundType}.mp3`,
-      `./sounds/${soundType}.mp3`,
-    ];
-
-    const audio = new Audio();
-    audio.volume = 0.7;
-
-    for (const source of audioSources) {
-      try {
-        console.log(`Attempting to play ${soundType} audio from: ${source}`);
-        audio.src = source;
-
-        await new Promise((resolve, reject) => {
-          audio.oncanplaythrough = resolve;
-          audio.onerror = reject;
-          audio.load();
-        });
-
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-          await playPromise;
-          console.log(`${soundType} sound played successfully from: ${source}`);
-          return;
-        }
-      } catch (error) {
-        console.warn(
-          `Failed to play ${soundType} audio from ${source}:`,
-          error
-        );
-      }
-    }
-
-    console.error(`All ${soundType} audio sources failed to play`);
-  }, []);
 
   const handleItemDoubleClick = useCallback(
     (id, label) => {
@@ -128,8 +88,8 @@ const Desktop = memo(({ onFullScreenChange }) => {
     const newCollapsedState = !isTaskbarCollapsed;
     setIsTaskbarCollapsed(newCollapsedState);
     const soundType = newCollapsedState ? "collapse" : "expand";
-    await playTaskbarSound(soundType);
-  }, [isTaskbarCollapsed, playTaskbarSound]);
+    await playSound(soundType);
+  }, [isTaskbarCollapsed]);
 
   const renderFolderContent = useCallback(
     (folderId) => {
@@ -163,34 +123,36 @@ const Desktop = memo(({ onFullScreenChange }) => {
         [windowId]: isLoading,
       }));
     },
-    useEffect(() => {
-      if (!isLoading && !isDelaying && !hasStarted && !isShuttingDown) {
-        const startup = async () => {
-          try {
-            await playTaskbarSound("startup");
-          } catch (error) {
-            console.warn("Startup sound failed:", error);
-          }
-
-          const startups = desktopItems.filter((item) => item.startup === true);
-          for (const item of startups) {
-            handleItemDoubleClick(item.id, item.label);
-          }
-
-          setHasStarted(true);
-        };
-
-        startup();
-      }
-    }, [
-      isLoading,
-      isDelaying,
-      hasStarted,
-      isShuttingDown,
-      playTaskbarSound,
-      handleItemDoubleClick,
-    ])
+    []
   );
+
+  // Handle startup sequence
+  useEffect(() => {
+    if (!isLoading && !isDelaying && !hasStarted && !isShuttingDown) {
+      const startup = async () => {
+        try {
+          await playSound("startup");
+        } catch (error) {
+          console.warn("Startup sound failed:", error);
+        }
+
+        const startups = desktopItems.filter((item) => item.startup === true);
+        for (const item of startups) {
+          handleItemDoubleClick(item.id, item.label);
+        }
+
+        setHasStarted(true);
+      };
+
+      startup();
+    }
+  }, [
+    isLoading,
+    isDelaying,
+    hasStarted,
+    isShuttingDown,
+    handleItemDoubleClick,
+  ]);
 
   // Notify parent of full-screen state
   useEffect(() => {

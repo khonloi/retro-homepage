@@ -1,6 +1,7 @@
 // src/hooks/useLoadingScreen.js
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getCursorStyle } from '../utilities/cursors';
+import { playSound } from '../utilities/sounds';
 
 export const useLoadingScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -32,68 +33,8 @@ export const useLoadingScreen = () => {
     document.body.style.cursor = getCursorStyle('arrow');
     
     // Play startup sound
-    playStartupSound();
-  }, []);
-
-  // Improved startup sound function with path handling for different environments
-  const playStartupSound = async () => {
-    // Prevent duplicate sound playing
-    if (audioRef.current) {
-      console.log('Sound already playing, not playing again');
-      return;
-    }
-    
-    // Get base URL for assets - handles both localhost and GitHub Pages
-    const baseUrl = import.meta.env.BASE_URL || '/';
-    
-    // Create array of possible sound paths with different formats and paths
-    const audioSources = [
-      `${baseUrl}sounds/logon.mp3`,
-      `/sounds/logon.mp3`,
-      `./sounds/logon.mp3`,
-      `../public/sounds/logon.mp3`,
-    ];
-
-    // Create and configure audio element
-    audioRef.current = new Audio();
-    audioRef.current.volume = 0.7;
-    
-    // Try each source until one works
-    for (const source of audioSources) {
-      try {
-        console.log(`Attempting to play audio from: ${source}`);
-        audioRef.current.src = source;
-        
-        // Use a promise to handle the audio loading
-        await new Promise((resolve, reject) => {
-          audioRef.current.oncanplaythrough = resolve;
-          audioRef.current.onerror = reject;
-          audioRef.current.load();
-        });
-        
-        // Play the audio with user interaction handling
-        const playPromise = audioRef.current.play();
-        if (playPromise !== undefined) {
-          await playPromise;
-          console.log(`Startup sound played successfully from: ${source}`);
-          
-          // Add an event listener to clear the audio reference when playback ends
-          audioRef.current.onended = () => {
-            console.log('Sound playback ended, clearing audio reference');
-            audioRef.current = null;
-          };
-          
-          return; // Exit if successful
-        }
-      } catch (error) {
-        console.warn(`Failed to play audio from ${source}:`, error);
-        // Continue to next source
-      }
-    }
-    
-    console.error("All audio sources failed to play");
-    audioRef.current = null; // Clear reference if all sources failed
-  };
+    playSound('logon', { preventDuplicate: true, audioRef });
+  }, [audioRef]);
 
   // Loading screen and startup sound effect
   useEffect(() => {
@@ -155,7 +96,7 @@ export const useLoadingScreen = () => {
             
             // Play sound when loading completes (only if not already played)
             if (!soundPlayed) {
-              playStartupSound();
+              playSound('logon', { preventDuplicate: true, audioRef });
               soundPlayed = true;
             }
             
