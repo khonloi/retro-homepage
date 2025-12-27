@@ -86,7 +86,6 @@
 }
 
 .main-content {
-  text-align: justify;
   padding: 16px;
   overflow-y: auto;
   max-width: 500px;

@@ -22,6 +22,7 @@ const LoadingScreen = ({
   const [progress, setProgress] = useState(0);
   const [showSkipMessage, setShowSkipMessage] = useState(true);
   const [showRestartMessage, setShowRestartMessage] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const lastTapRef = useRef(0);
 
   // Initialize displayed lines based on mode
@@ -39,6 +40,20 @@ const LoadingScreen = ({
       "Dependencies Check: ",
     ];
   });
+
+  // Preload the startup card image (only once on mount)
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => {
+      setImageLoaded(true);
+    };
+    img.onerror = () => {
+      // Even if image fails to load, allow the component to render
+      setImageLoaded(true);
+    };
+    img.src = startupCard;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   // Common function to hide cursor
   const hideCursor = () => {
@@ -158,7 +173,7 @@ const LoadingScreen = ({
         "  Detecting eslint ... @9.25.0 ",
         "  Detecting gh-pages ... @6.3.0 ",
         "",
-        "Starting Pane 97 ... ",
+        "Starting VisiCore ... ",
       ];
       const delays = [850, 650, 1200, 750, 900, 550, 1000, 800, 2000];
 
@@ -222,8 +237,11 @@ const LoadingScreen = ({
 
   // Render based on mode and stage
   if (mode === 'shutdown') {
-    // Shutdown mode: Loading screen (stage 0)
+    // Shutdown mode: Loading screen (stage 0) - wait for image to load
     if (stage === 0) {
+      if (!imageLoaded) {
+        return null; // Don't render until image is loaded
+      }
       return (
         <div className="loading-screen">
           <div className="loading-content">
@@ -307,7 +325,11 @@ const LoadingScreen = ({
     );
   }
 
-  // Loading mode: Progress screen (stage 2)
+  // Loading mode: Progress screen (stage 2) - wait for image to load
+  if (!imageLoaded) {
+    return null; // Don't render until image is loaded
+  }
+  
   return (
     <div className="loading-screen">
       <div className="loading-content">

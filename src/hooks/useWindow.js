@@ -1,21 +1,23 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 
 export const useWindow = () => {
   const [openWindows, setOpenWindows] = useState([]);
   const [focusedWindow, setFocusedWindow] = useState(null);
-  const [nextZIndex, setNextZIndex] = useState(1000);
+  const nextZIndexRef = useRef(1000);
 
   const focusWindow = useCallback((id) => {
     if (focusedWindow === id) return; // Already focused, no need to update
     
+    const newZIndex = nextZIndexRef.current + 1;
+    nextZIndexRef.current = newZIndex;
+    
     setFocusedWindow(id);
     setOpenWindows(prev => {
       return prev.map(win => 
-        win.id === id ? { ...win, zIndex: nextZIndex } : win
+        win.id === id ? { ...win, zIndex: newZIndex } : win
       );
     });
-    setNextZIndex(prev => prev + 1);
-  }, [focusedWindow, nextZIndex]);
+  }, [focusedWindow]);
 
   // Memoize window operations for better performance
   const openWindow = useCallback((windowData) => {
@@ -29,6 +31,9 @@ export const useWindow = () => {
       }
 
       // Mark window for centering - actual dimensions will be measured after render
+      const newZIndex = nextZIndexRef.current + 1;
+      nextZIndexRef.current = newZIndex;
+      
       const newWindow = {
         id: windowData.id,
         title: windowData.title,
@@ -38,16 +43,14 @@ export const useWindow = () => {
         isFullScreen: windowData.isFullScreen || false, // Add isFullScreen
         iconSrc: windowData.iconSrc || null,
         initialPosition: { x: 0, y: 0, shouldCenter: true }, // Will be recalculated after render
-        zIndex: nextZIndex,
+        zIndex: newZIndex,
       };
 
-      // Update the next z-index
-      setNextZIndex(prevZ => prevZ + 1);
       setFocusedWindow(windowData.id);
       
       return [...prev, newWindow];
     });
-  }, [nextZIndex, focusWindow]);
+  }, [focusWindow]);
 
   const closeWindow = useCallback((id) => {
     setOpenWindows(prev => {

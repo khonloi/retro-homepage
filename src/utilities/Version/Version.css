@@ -1,0 +1,80 @@
+/* Version.css */
+.version-container {
+  width: 19rem;
+  height: 346px;
+  padding: 16px;
+}
+
+.version-title {
+  border-bottom: 2px solid var(--button-border-dark);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.version-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.version-logo-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.version-logo {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.version-specs {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.version-spec {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.version-spec-label {
+  font-weight: bold;
+}
+
+.version-legal {
+  border-top: 2px solid var(--button-border-dark);
+  padding-top: 4px;
+}
+
+.version-legal-text {
+  margin-bottom: 10px;
+}
+
+.version-license {
+  margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .version-container {
+    width: auto;
+  }
+
+  .version-spec {
+    flex-direction: column;
+  }
+
+  .version-spec-label {
+    margin-bottom: 4px;
+  }
+
+  .version-logo-group {
+    gap: 10px;
+  }
+}

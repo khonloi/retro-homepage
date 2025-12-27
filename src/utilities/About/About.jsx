@@ -1,183 +1,105 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, memo, useCallback } from "react";
 import "./About.css";
 import folderIcon from "./Microsoft Windows 3 Folder.ico";
 import folderOpenIcon from "./Microsoft Windows 3 Folder Open Document.ico";
 import docIcon from "./Microsoft Windows 3 Documents.ico";
 import portraitImage from "./portrait.jpg";
 
-const About = () => {
+// Skills data structure for better maintainability
+const SKILLS_DATA = [
+  {
+    id: "frontend",
+    title: "Frontend Development",
+    skills: [
+      "HTML5 / CSS3",
+      "JavaScript (ES6) / TypeScript",
+      "React.js",
+      "Bootstrap / SCSS / Tailwind CSS",
+      "Responsive Design",
+      "Animation",
+    ],
+  },
+  {
+    id: "backend",
+    title: "Backend Development",
+    skills: [
+      "Node.js / Express.js",
+      "NestJS",
+      "Socket.IO",
+      "RESTful APIs / JWT",
+    ],
+  },
+  {
+    id: "tools",
+    title: "Development Tools",
+    skills: ["Git / GitHub", "Vite / Webpack", "Postman"],
+  },
+  {
+    id: "devops",
+    title: "DevOps & Deployment",
+    skills: ["PostgreSQL", "Prisma", "Firebase", "Heroku"],
+  },
+];
+
+// Initial folder states
+const INITIAL_FOLDER_STATES = SKILLS_DATA.reduce((acc, folder) => {
+  acc[folder.id] = true;
+  return acc;
+}, {});
+
+const About = memo(() => {
   // State to manage open/closed folders
-  const [openFolders, setOpenFolders] = useState({
-    frontend: true,
-    backend: true,
-    tools: true,
-    devops: true,
-  });
+  const [openFolders, setOpenFolders] = useState(INITIAL_FOLDER_STATES);
 
   // Toggle folder open/closed state
-  const toggleFolder = (folder) => {
+  const toggleFolder = useCallback((folderId) => {
     setOpenFolders((prev) => ({
       ...prev,
-      [folder]: !prev[folder],
+      [folderId]: !prev[folderId],
     }));
-  };
+  }, []);
+
+  // Memoize skills sections to prevent unnecessary re-renders
+  const skillsSections = useMemo(
+    () =>
+      SKILLS_DATA.map((folder) => (
+        <div key={folder.id} className="skills-section">
+          <div
+            className="skills-section-title"
+            onClick={() => toggleFolder(folder.id)}
+          >
+            <img
+              src={openFolders[folder.id] ? folderOpenIcon : folderIcon}
+              alt="Folder"
+              className="folder-icon"
+            />{" "}
+            {folder.title}
+          </div>
+          <div className="tree-connector">
+            {openFolders[folder.id] && (
+              <ul className="skills-list">
+                {folder.skills.map((skill, index) => (
+                  <li key={`${folder.id}-${index}`}>
+                    <img
+                      src={docIcon}
+                      alt="Document"
+                      className="folder-icon"
+                    />{" "}
+                    {skill}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      )),
+    [openFolders, toggleFolder]
+  );
 
   return (
     <div className="about-container">
       {/* Left Pane - Skills Tree */}
-      <div className="skills-pane">
-        {/* Frontend Development Folder */}
-        <div className="skills-section">
-          <div
-            className="skills-section-title"
-            onClick={() => toggleFolder("frontend")}
-          >
-            <img
-              src={openFolders.frontend ? folderOpenIcon : folderIcon}
-              alt="Folder"
-              className="folder-icon"
-            />{" "}
-            Frontend Development
-          </div>
-          <div className="tree-connector">
-            {openFolders.frontend && (
-              <ul className="skills-list">
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  HTML5 / CSS3
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  JavaScript (ES6) / TypeScript
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  React.js
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  Bootstrap / SCSS / Tailwind CSS
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  Responsive Design
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  Animation
-                </li>
-              </ul>
-            )}
-          </div>
-        </div>
-
-        {/* Backend Development Folder */}
-        <div className="skills-section">
-          <div
-            className="skills-section-title"
-            onClick={() => toggleFolder("backend")}
-          >
-            <img
-              src={openFolders.backend ? folderOpenIcon : folderIcon}
-              alt="Folder"
-              className="folder-icon"
-            />{" "}
-            Backend Development
-          </div>
-          <div className="tree-connector">
-            {openFolders.backend && (
-              <ul className="skills-list">
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  Node.js / Express.js
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  NestJS
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  Socket.IO
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  RESTful APIs / JWT
-                </li>
-              </ul>
-            )}
-          </div>
-        </div>
-
-        {/* Development Tools Folder */}
-        <div className="skills-section">
-          <div
-            className="skills-section-title"
-            onClick={() => toggleFolder("tools")}
-          >
-            <img
-              src={openFolders.tools ? folderOpenIcon : folderIcon}
-              alt="Folder"
-              className="folder-icon"
-            />{" "}
-            Development Tools
-          </div>
-          <div className="tree-connector">
-            {openFolders.tools && (
-              <ul className="skills-list">
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  Git / GitHub
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  Vite / Webpack
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  Postman
-                </li>
-              </ul>
-            )}
-          </div>
-        </div>
-
-        {/* DevOps & Deployment Folder */}
-        <div className="skills-section">
-          <div
-            className="skills-section-title"
-            onClick={() => toggleFolder("devops")}
-          >
-            <img
-              src={openFolders.devops ? folderOpenIcon : folderIcon}
-              alt="Folder"
-              className="folder-icon"
-            />{" "}
-            DevOps & Deployment
-          </div>
-          <div className="tree-connector">
-            {openFolders.devops && (
-              <ul className="skills-list">
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  PostgreSQL
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  Prisma
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  Firebase
-                </li>
-                <li>
-                  <img src={docIcon} alt="Document" className="folder-icon" />{" "}
-                  Heroku
-                </li>
-              </ul>
-            )}
-          </div>
-        </div>
-      </div>
+      <div className="skills-pane">{skillsSections}</div>
 
       {/* Right Pane - Main Content */}
       <div className="main-content">
@@ -211,7 +133,7 @@ const About = () => {
               Bachelor of Software Engineer
             </div>
             <div className="education-details">
-              FPT University • 2021 - 2025
+              FPT University • 2021 − 2025
             </div>
             <div className="education-concentration">
               <ul className="approach-list">
@@ -236,7 +158,7 @@ const About = () => {
           <div className="education-box">
             <div className="education-degree">Full Stack Developer Intern</div>
             <div className="education-details">
-              UTA Solutions • September 2024 - January 2025
+              UTA Solutions • September 2024 − January 2025
             </div>
             <div className="education-concentration">
               <ul className="approach-list">
@@ -262,7 +184,7 @@ const About = () => {
           <div className="education-box">
             <div className="education-degree">Front-End Developer Intern</div>
             <div className="education-details">
-              FPT Software • January 2024 - April 2024
+              FPT Software • January 2024 − April 2024
             </div>
             <div className="education-concentration">
               <ul className="approach-list">
@@ -286,6 +208,8 @@ const About = () => {
       </div>
     </div>
   );
-};
+});
+
+About.displayName = "About";
 
 export default About;

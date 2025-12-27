@@ -54,16 +54,16 @@
 }
 
 .control-button {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   font-weight: normal;
   font-family: var(--button-font);
-  font-size: 28px;
+  font-size: 30px;
 }
 
 .program-button {
-  width: 96px;
-  height: 32px;
+  width: 6rem;
+  height: 2rem;
   font-weight: normal;
 }
 
@@ -165,9 +165,9 @@
 /* Touch-friendly improvements */
 @media (max-width: 768px) { 
   .window-button.control-button {
-    min-width: 34px;
-    min-height: 34px;
-    font-size: 34px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 32px;
     display: flex;
     align-items: center;
     justify-content: center;

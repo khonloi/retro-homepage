@@ -47,32 +47,40 @@ const Window = memo(({
     onLoadingChange?.(id, isLoading);
   }, [isLoading, id, onLoadingChange]);
 
-  // Handle mobile detection and state transitions
+  // Handle mobile detection and state transitions - debounced for performance
   useEffect(() => {
+    let resizeTimer;
+    
     const handleResize = () => {
-      const mobile = window.innerWidth <= 768;
-      
-      if (mobile && !isMobile && !isMinimized && !isFullScreenActive) {
-        setPreMobileState({
-          position,
-          isMaximized,
-        });
-        setPreMaximizePosition(position);
-        setPosition({ x: 0, y: MENU_BAR_HEIGHT });
-        setIsMaximized(true);
-      } else if (!mobile && isMobile && preMobileState && !isMinimized && !isFullScreenActive) {
-        setPosition(preMobileState.position);
-        setIsMaximized(preMobileState.isMaximized);
-        setPreMobileState(null);
-      }
-      
-      setIsMobile(mobile);
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const mobile = window.innerWidth <= 768;
+        
+        if (mobile && !isMobile && !isMinimized && !isFullScreenActive) {
+          setPreMobileState({
+            position,
+            isMaximized,
+          });
+          setPreMaximizePosition(position);
+          setPosition({ x: 0, y: MENU_BAR_HEIGHT });
+          setIsMaximized(true);
+        } else if (!mobile && isMobile && preMobileState && !isMinimized && !isFullScreenActive) {
+          setPosition(preMobileState.position);
+          setIsMaximized(preMobileState.isMaximized);
+          setPreMobileState(null);
+        }
+        
+        setIsMobile(mobile);
+      }, 150); // Debounce resize events
     };
 
     window.addEventListener('resize', handleResize);
     handleResize();
 
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+    };
   }, [isMobile, isMinimized, position, isMaximized, preMobileState, MENU_BAR_HEIGHT, isFullScreenActive]);
 
   // Handle ESC key to close full-screen window

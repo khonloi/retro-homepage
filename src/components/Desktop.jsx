@@ -1,6 +1,5 @@
-import React, { useState, useCallback, memo, useEffect } from "react";
+import React, { useState, useCallback, memo, useEffect, useMemo } from "react";
 import Icon from "./Icon";
-import Folder from "./Folder";
 import Window from "./Window";
 import Explorer from "./Explorer";
 import Taskbar from "./Taskbar";
@@ -90,11 +89,20 @@ const Desktop = memo(({ onFullScreenChange }) => {
     await playSound(soundType);
   }, [isTaskbarCollapsed]);
 
+  // Memoize folder data lookup for better performance
+  const folderDataMap = useMemo(() => {
+    const map = new Map();
+    desktopItems.forEach((item) => {
+      if (item.type === "folder") {
+        map.set(item.id, item);
+      }
+    });
+    return map;
+  }, []);
+
   const renderFolderContent = useCallback(
     (folderId) => {
-      const folderData = desktopItems.find(
-        (item) => item.id === folderId && item.type === "folder"
-      );
+      const folderData = folderDataMap.get(folderId);
       if (!folderData) return <div role="alert">Folder not found</div>;
 
       return (
@@ -111,7 +119,7 @@ const Desktop = memo(({ onFullScreenChange }) => {
         />
       );
     },
-    [handleItemDoubleClick, handleItemPositionChange, selectedIcon]
+    [folderDataMap, handleItemDoubleClick, handleItemPositionChange, selectedIcon]
   );
 
   // Handle window loading state changes
@@ -153,16 +161,26 @@ const Desktop = memo(({ onFullScreenChange }) => {
     handleItemDoubleClick,
   ]);
 
-  // Notify parent of full-screen state
-  useEffect(() => {
-    const hasFullScreenWindow = openWindows.some(
+  // Memoize minimized window IDs for faster lookup
+  const minimizedWindowIds = useMemo(
+    () => new Set(minimizedWindows.map((mw) => mw.id)),
+    [minimizedWindows]
+  );
+
+  // Memoize full-screen window calculation to avoid duplicate computation
+  const hasFullScreenWindow = useMemo(() => {
+    return openWindows.some(
       (win) =>
         win.isFullScreen &&
-        !minimizedWindows.some((mw) => mw.id === win.id) &&
-        windowLoadingStates[win.id] === false // Only when fully loaded
+        !minimizedWindowIds.has(win.id) &&
+        windowLoadingStates[win.id] === false
     );
+  }, [openWindows, minimizedWindowIds, windowLoadingStates]);
+
+  // Notify parent of full-screen state
+  useEffect(() => {
     onFullScreenChange?.(hasFullScreenWindow);
-  }, [openWindows, minimizedWindows, windowLoadingStates, onFullScreenChange]);
+  }, [hasFullScreenWindow, onFullScreenChange]);
 
   if (isLoading) {
     return <LoadingScreen progress={progress} onSkip={skipLoading} />;
@@ -195,13 +213,6 @@ const Desktop = memo(({ onFullScreenChange }) => {
     );
   }
 
-  const hasFullScreenWindow = openWindows.some(
-    (win) =>
-      win.isFullScreen &&
-      !minimizedWindows.some((mw) => mw.id === win.id) &&
-      windowLoadingStates[win.id] === false
-  );
-
   return (
     <>
       {!hasFullScreenWindow && (
@@ -220,13 +231,13 @@ const Desktop = memo(({ onFullScreenChange }) => {
         aria-label="Desktop environment"
       >
         {allDesktopItems.map((item) => {
-          const ItemComponent = item.type === "folder" ? Folder : Icon;
           return (
-            <ItemComponent
+            <Icon
               key={item.id}
               id={item.id}
               label={item.label}
               iconSrc={item.iconSrc}
+              type={item.type}
               position={itemPositions[item.id]}
               onPositionChange={handleItemPositionChange}
               onDoubleClick={() => handleItemDoubleClick(item.id, item.label)}
@@ -247,7 +258,7 @@ const Desktop = memo(({ onFullScreenChange }) => {
         })}
 
         {openWindows.map((win) => {
-          const isMinimized = minimizedWindows.some((mw) => mw.id === win.id);
+          const isMinimized = minimizedWindowIds.has(win.id);
 
           return (
             <Window

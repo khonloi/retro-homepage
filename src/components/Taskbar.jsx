@@ -1,7 +1,8 @@
 // src/components/Taskbar.jsx
+import React, { memo } from 'react';
 import '../css/Taskbar.css';
 
-const Taskbar = ({ minimizedWindows, onRestore, isCollapsed, onToggleCollapse }) => {
+const Taskbar = memo(({ minimizedWindows, onRestore, isCollapsed, onToggleCollapse }) => {
   // Don't render taskbar if there are no minimized windows
   if (!minimizedWindows || minimizedWindows.length === 0) {
     return null;
@@ -36,6 +37,8 @@ const Taskbar = ({ minimizedWindows, onRestore, isCollapsed, onToggleCollapse })
       </button>
     </div>
   );
-};
+});
+
+Taskbar.displayName = 'Taskbar';
 
 export default Taskbar;

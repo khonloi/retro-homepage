@@ -1,9 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import DialogWindow from './DialogWindow';
 import '../css/ShutdownDialog.css';
 import monitorMoonIcon from '../assets/icons/Microsoft Windows 3 Post-It.ico';
 
 const ShutdownDialog = ({ isVisible, onClose, onShutdown }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Preload the icon image when dialog becomes visible
+  useEffect(() => {
+    if (isVisible && !imageLoaded) {
+      const img = new Image();
+      img.onload = () => {
+        setImageLoaded(true);
+      };
+      img.onerror = () => {
+        // Even if image fails to load, allow the dialog to render
+        setImageLoaded(true);
+      };
+      img.src = monitorMoonIcon;
+    }
+    
+    // Reset image loaded state when dialog is hidden
+    if (!isVisible) {
+      setImageLoaded(false);
+    }
+  }, [isVisible, imageLoaded]);
+
   if (!isVisible) return null;
 
   const handleOK = () => {
@@ -17,6 +39,7 @@ const ShutdownDialog = ({ isVisible, onClose, onShutdown }) => {
 
   return (
     <div className="shutdown-overlay">
+      {imageLoaded && (
       <DialogWindow
         id="shutdown-dialog"
         title="Exit Session"
@@ -40,6 +63,7 @@ const ShutdownDialog = ({ isVisible, onClose, onShutdown }) => {
           </div>
         </div>
       </DialogWindow>
+      )}
     </div>
   );
 };

@@ -1,9 +1,9 @@
 import About from "../utilities/About/About";
-import Projects from "../utilities/Projects/Projects";
 import Contact from "../utilities/Contact/Contact";
 import Welcome from "../utilities/Welcome/Welcome";
 import Message from "../utilities/Message/Message";
 import StarShow from "../utilities/StarShow/StarShow";
+import Version from "../utilities/Version/Version";
 
 // Import your icons
 import logoIcon from "../assets/icons/Tree.ico";
@@ -24,6 +24,7 @@ import briefcaseIcon from "../assets/icons/Microsoft Windows 3 Briefcase.ico";
 import computerIcon from "../assets/icons/Microsoft Windows 3 Computer.ico";
 import faxIcon from "../assets/icons/Microsoft Windows 3 Fax Machine.ico";
 import docIcon from "../assets/icons/Microsoft Windows 3 Documents.ico";
+import aboutIcon from "../assets/icons/Microsoft Windows 3 Post-It.ico";
 
 // Unified desktop items configuration
 export const desktopItems = [
@@ -92,7 +93,7 @@ export const desktopItems = [
     contents: [
       {
         id: "portfolio",
-        label: "Pane 97",
+        label: "VisiCore",
         iconSrc: logoIcon,
         type: "icon",
         isMaximizable: false,
@@ -114,10 +115,17 @@ export const desktopItems = [
     type: "icon",
     isMaximizable: false,
   },
+    {
+    id: "version",
+    label: "Version",
+    iconSrc: logoIcon,
+    type: "icon",
+    isMaximizable: false,
+  },
   {
     id: "welcome",
     label: "Welcome",
-    iconSrc: logoIcon,
+    iconSrc: aboutIcon,
     type: "icon",
     isMaximizable: false,
     startup: true,
@@ -212,28 +220,30 @@ export const desktopItems = [
   },
 ];
 
-// Window content renderer function
+// Window content registry for better maintainability and performance
+const windowContentRegistry = {
+  about: About,
+  contact: Contact,
+  welcome: Welcome,
+  message: Message,
+  starshow: StarShow,
+  version: Version,
+};
+
+// Default fallback component
+const DefaultWindowContent = ({ windowTitle }) => (
+  <div className="p-4">
+    <h3 className="text-lg font-bold">{windowTitle}</h3>
+    <p>{windowTitle} coming soon...</p>
+    <p>This would be where the {windowTitle} interface would load.</p>
+  </div>
+);
+
+// Window content renderer function - optimized with registry lookup
 export const renderWindowContent = (windowId, windowTitle) => {
-  switch (windowId) {
-    case "about":
-      return <About />;
-    case "projects":
-      return <Projects />;
-    case "contact":
-      return <Contact />;
-    case "welcome":
-      return <Welcome />;
-    case "message":
-      return <Message />;
-    case "starshow":
-      return <StarShow />;
-    default:
-      return (
-        <div className="p-4">
-          <h3 className="text-lg font-bold">{windowTitle}</h3>
-          <p>{windowTitle} coming soon...</p>
-          <p>This would be where the {windowTitle} interface would load.</p>
-        </div>
-      );
+  const Component = windowContentRegistry[windowId];
+  if (Component) {
+    return <Component />;
   }
+  return <DefaultWindowContent windowTitle={windowTitle} />;
 };

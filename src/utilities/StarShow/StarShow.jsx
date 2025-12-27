@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, memo, useMemo, useCallback } from "react";
 import p5 from "p5";
 import hsIcon from "./hammer-sickle.png";
 import hsIcon1 from "./hammer-sickle-1.png";
@@ -14,59 +14,69 @@ import starIcon4 from "./star-4.png";
 import starIcon5 from "./star-5.png";
 import "./StarShow.css";
 
-const StarShow = () => {
+// Constants for better maintainability
+const WINDOWS_NUM = 500;
+const SPEED = 4;
+const MIN_SIZE = 4;
+const MAX_SIZE = 26;
+
+// Array of image paths to support multiple images
+const IMAGE_PATHS = [
+  hsIcon,
+  hsIcon1,
+  hsIcon2,
+  hsIcon3,
+  hsIcon4,
+  hsIcon5,
+  starIcon,
+  starIcon1,
+  starIcon2,
+  starIcon3,
+  starIcon4,
+  starIcon5,
+];
+
+const StarShow = memo(() => {
   const sketchRef = useRef();
   const p5InstanceRef = useRef(null);
 
-  // Array of image paths to support multiple images
-  const imagePaths = [
-    hsIcon,
-    hsIcon1,
-    hsIcon2,
-    hsIcon3,
-    hsIcon4,
-    hsIcon5,
-    starIcon,
-    starIcon1,
-    starIcon2,
-    starIcon3,
-    starIcon4,
-    starIcon5
-  ];
-
-  useEffect(() => {
-    const sketch = (p) => {
+  // Memoize the sketch function to prevent recreation on every render
+  const createSketch = useCallback(() => {
+    return (p) => {
       let windows = [];
-      let windowsNum = 500;
-      let speed = 4;
       let images = [];
 
       class Window {
         constructor() {
-          this.x = p.random(-p.width, p.width);
-          this.y = p.random(-p.height, p.height);
-          this.z = p.random(p.width);
-          this.pz = this.z;
+          this.reset();
           // Randomly assign an image from the loaded images
           this.img = images[Math.floor(p.random(images.length))];
         }
 
+        reset() {
+          this.x = p.random(-p.width, p.width);
+          this.y = p.random(-p.height, p.height);
+          this.z = p.random(p.width);
+          this.pz = this.z;
+        }
+
         update() {
-          this.z = this.z - speed;
+          this.z = this.z - SPEED;
           if (this.z < 1) {
             this.z = p.width / 2;
-            this.x = p.random(-p.width, p.width);
-            this.y = p.random(-p.height, p.height);
-            this.pz = this.z;
+            this.reset();
             // Reassign a random image when resetting
-            this.img = images[Math.floor(p.random(images.length))];
+            if (images.length > 0) {
+              this.img = images[Math.floor(p.random(images.length))];
+            }
           }
         }
 
         show() {
-          let sx = p.map(this.x / this.z, 0, 1, 0, p.width / 2);
-          let sy = p.map(this.y / this.z, 0, 1, 0, p.height / 2);
-          let r = p.map(this.z, 0, p.width / 2, 26, 4);
+          if (!this.img) return;
+          const sx = p.map(this.x / this.z, 0, 1, 0, p.width / 2);
+          const sy = p.map(this.y / this.z, 0, 1, 0, p.height / 2);
+          const r = p.map(this.z, 0, p.width / 2, MAX_SIZE, MIN_SIZE);
           p.image(this.img, sx, sy, r, r);
           this.pz = this.z;
         }
@@ -74,10 +84,10 @@ const StarShow = () => {
 
       p.setup = async () => {
         p.createCanvas(window.innerWidth, window.innerHeight);
-        // Load all images from the imagePaths array
+        // Load all images from the IMAGE_PATHS array
         try {
           images = await Promise.all(
-            imagePaths.map(
+            IMAGE_PATHS.map(
               (path) =>
                 new Promise((resolve, reject) => {
                   p.loadImage(path, resolve, (event) => reject(event));
@@ -89,7 +99,8 @@ const StarShow = () => {
           return;
         }
 
-        for (let i = 0; i < windowsNum; i++) {
+        // Initialize windows
+        for (let i = 0; i < WINDOWS_NUM; i++) {
           windows[i] = new Window();
         }
       };
@@ -98,6 +109,8 @@ const StarShow = () => {
         if (images.length === 0) return; // Wait for images to load
         p.background(0);
         p.translate(p.width / 2, p.height / 2);
+        
+        // Use for loop for better performance
         for (let i = 0; i < windows.length; i++) {
           windows[i].update();
           windows[i].show();
@@ -108,15 +121,23 @@ const StarShow = () => {
         p.resizeCanvas(window.innerWidth, window.innerHeight);
       };
     };
+  }, []);
 
+  useEffect(() => {
+    const sketch = createSketch();
     p5InstanceRef.current = new p5(sketch, sketchRef.current);
 
     return () => {
-      p5InstanceRef.current.remove();
+      if (p5InstanceRef.current) {
+        p5InstanceRef.current.remove();
+        p5InstanceRef.current = null;
+      }
     };
-  }, []);
+  }, [createSketch]);
 
   return <div ref={sketchRef} className="star-show-canvas" />;
-};
+});
+
+StarShow.displayName = "StarShow";
 
 export default StarShow;
