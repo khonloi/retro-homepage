@@ -1,5 +1,6 @@
 .welcome-container {
   display: flex;
+  flex-direction: column;
   gap: 16px;
   height: 25rem;
   padding: 16px;
@@ -7,6 +8,33 @@
   overflow: hidden;
   box-sizing: border-box;
   background-color: #ededed;
+}
+
+.welcome-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.welcome-header-icon {
+  width: 38px;
+  height: 38px;
+}
+
+.welcome-header-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0;
+  color: #000;
+  font-family: var(--main-font);
+}
+
+.welcome-main-layout {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
 }
 
 .welcome-buttons-group {
@@ -62,6 +90,17 @@
     max-width: 600px;
     margin: 0 auto;
     overflow: hidden;
+    gap: 12px;
+  }
+
+  .welcome-header {
+    justify-content: center;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .welcome-main-layout {
+    flex-direction: column;
     gap: 0;
   }
 

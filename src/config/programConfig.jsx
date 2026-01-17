@@ -94,7 +94,7 @@ export const desktopItems = [
     contents: [
       {
         id: "portfolio",
-        label: "VisiCore",
+        label: "GOMI 3",
         iconSrc: logoIcon,
         type: "icon",
         isMaximizable: false,
@@ -106,7 +106,7 @@ export const desktopItems = [
         iconSrc: gashIcon,
         type: "icon",
         isMaximizable: false,
-        link: "https://gash-pi.vercel.app/",
+        link: "https://gash-frontend.vercel.app/",
       },
       {
         id: "gash2",

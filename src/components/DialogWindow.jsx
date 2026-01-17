@@ -42,7 +42,7 @@ const DialogWindow = memo(({
     if (!e.target.closest(".window-title-bar")) return;
     handleMouseDown(e);
   }, [handleMouseDown]);
-  
+
   const handleTitleBarTouchStart = useCallback((e) => {
     if (!e.target.closest(".window-title-bar")) return;
     handleTouchStart(e);

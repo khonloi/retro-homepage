@@ -103,6 +103,8 @@ const MENU_ITEMS = [
   { id: "contact-now", label: "Contact" },
 ];
 
+import TreeIcon from "../../assets/icons/Tree.ico";
+
 const Welcome = memo(() => {
   const [activeSection, setActiveSection] = useState("welcome");
 
@@ -117,18 +119,24 @@ const Welcome = memo(() => {
 
   return (
     <div className="welcome-container">
-      <div className="welcome-buttons-group">
-        {MENU_ITEMS.map((item) => (
-          <button
-            key={item.id}
-            className="welcome-menu-item window-button program-button"
-            onClick={() => handleSectionChange(item.id)}
-          >
-            {item.label}
-          </button>
-        ))}
+      <div className="welcome-header">
+        <img src={TreeIcon} alt="Tree" className="welcome-header-icon" />
+        <h1 className="welcome-header-title">GOMI 3</h1>
       </div>
-      <div className="welcome-content-section">{content}</div>
+      <div className="welcome-main-layout">
+        <div className="welcome-buttons-group">
+          {MENU_ITEMS.map((item) => (
+            <button
+              key={item.id}
+              className="welcome-menu-item window-button program-button"
+              onClick={() => handleSectionChange(item.id)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <div className="welcome-content-section">{content}</div>
+      </div>
     </div>
   );
 });

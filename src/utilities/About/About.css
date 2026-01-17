@@ -130,7 +130,8 @@
   border: 1px solid var(--button-border-dark);
   padding: 14px;
   background-color: #f6f6f6;
-  margin-bottom: 16px; /* Added margin between education boxes */
+  margin-bottom: 16px;
+  /* Added margin between education boxes */
 }
 
 .education-degree {

@@ -12,13 +12,36 @@
 .windows-icon.image-loading {
   visibility: hidden;
 }
+
 .windows-icon.selected .item-label {
-  color: var(--windows-black) !important;
+  color: var(--windows-black);
   background-color: var(--windows-yellow);
 }
+
+@keyframes flash-label {
+
+  0%,
+  49.9% {
+    color: var(--windows-black);
+    background-color: var(--windows-yellow);
+  }
+
+  50%,
+  100% {
+    color: var(--windows-white);
+    background-color: transparent;
+  }
+}
+
+.windows-icon.flashing .item-label {
+  animation: flash-label 0.125s steps(1) infinite;
+  z-index: 10;
+}
+
 .item-image {
   height: 48px;
 }
+
 .item-image img {
   width: 100%;
   height: 100%;
@@ -28,6 +51,7 @@
   image-rendering: crisp-edges;
   pointer-events: none;
 }
+
 .item-label {
   font-size: 14px;
   text-align: center;
@@ -37,14 +61,20 @@
   pointer-events: none;
   word-wrap: break-word;
   line-height: 1.2;
-}
-/* Touch-friendly improvements /
-@media (max-width: 768px) {
-.windows-icon {
-touch-action: none; / Prevent browser handling of touch gestures */
-
-.windows-icon .item-label {
-  font-size: 14px;
-  max-width: 5rem; /* Wider label area for touch */
   padding: 2px 5px;
+}
+
+/* Touch-friendly improvements */
+@media (max-width: 768px) {
+  .windows-icon {
+    touch-action: none;
+    /* Prevent browser handling of touch gestures */
+  }
+
+  .windows-icon .item-label {
+    font-size: 14px;
+    max-width: 5rem;
+    /* Wider label area for touch */
+    padding: 2px 5px;
+  }
 }

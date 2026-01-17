@@ -5,7 +5,7 @@
   box-shadow: 0 0 0 4px var(--windows-black);
   min-width: 320px;
   font-family: var(--main-font);
-  
+
   transform-origin: center center;
 }
 
@@ -82,6 +82,10 @@
 .window-content {
   border-top: 3px solid var(--windows-bg);
   overflow: auto;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
 }
 
 .window-content::-webkit-scrollbar {
@@ -104,6 +108,14 @@
 
 .windows-window.dragging {
   user-select: none;
+}
+
+.window-outline {
+  position: absolute;
+  pointer-events: none;
+  border: 4px solid var(--button-border-dark);
+  box-sizing: border-box;
+  z-index: 10001;
 }
 
 .windows-window.opening .window-title-bar,
@@ -168,7 +180,7 @@
 }
 
 /* Touch-friendly improvements */
-@media (max-width: 768px) { 
+@media (max-width: 768px) {
   .window-button.control-button {
     min-width: 32px;
     min-height: 32px;

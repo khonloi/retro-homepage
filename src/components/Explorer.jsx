@@ -2,12 +2,12 @@ import React, { memo, useCallback } from 'react';
 import Icon from './Icon';
 import '../css/Explorer.css';
 
-const Explorer = memo(({ 
-  folderId, 
-  folderData, 
-  onIconDoubleClick, 
+const Explorer = memo(({
+  folderId,
+  folderData,
+  onIconDoubleClick,
   onFolderDoubleClick,
-  onIconSelect, 
+  onIconSelect,
   onFolderSelect,
   selectedItem,
   onMoveIcon,
@@ -45,8 +45,7 @@ const Explorer = memo(({
               isSelected={selectedItem === item.id}
               onSelect={item.type === 'folder' ? onFolderSelect : onIconSelect}
               onDrop={item.type === 'folder' ? handleDrop : undefined}
-              draggable={item.type !== 'folder'}
-              onDragStart={item.type !== 'folder' ? (e) => handleDragStart(e, item.id) : undefined}
+              draggable={false}
             />
           );
         })}

@@ -34,11 +34,6 @@ const SKILLS_DATA = [
     title: "Development Tools",
     skills: ["Git / GitHub", "Vite / Webpack", "Postman"],
   },
-  {
-    id: "devops",
-    title: "DevOps & Deployment",
-    skills: ["MongoDB", "Vercel", "Firebase", "Heroku"],
-  },
 ];
 
 // Initial folder states
@@ -118,8 +113,7 @@ const About = memo(() => {
             Full Stack Developer with hands-on experience building scalable web
             applications using modern JavaScript frameworks. Proficient in
             front-end development with React.js and responsive UI design, and
-            back-end development with Node.js and Express.js. Skilled in
-            deploying applications on Heroku and Firebase, optimizing API
+            back-end development with Node.js and Express.js. Skilled in optimizing API
             performance, and implementing secure authentication with JWT. Strong
             foundation in agile workflows, code reviews, and performance
             optimization.
@@ -146,7 +140,7 @@ const About = memo(() => {
                   <strong>Academic Project: </strong> Led a team in developing a
                   full-stack e-commerce application using React and Node.js,
                   featuring secure authentication, product management,
-                  and real-time order tracking powered by Firebase.
+                  and real-time order tracking.
                 </li>
               </ul>
             </div>

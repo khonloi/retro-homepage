@@ -11,6 +11,7 @@ import { useLoadingScreen } from "../hooks/useLoadingScreen";
 import { useWindowManager } from "../hooks/useWindowManager";
 import { useShutdown } from "../hooks/useShutdown";
 import { playSound } from "../utilities/sounds";
+import { getCursorStyle } from "../utilities/cursors";
 import "../css/Desktop.css";
 import "../css/Explorer.css";
 import "../css/Taskbar.css";
@@ -162,6 +163,13 @@ const Desktop = memo(({ onFullScreenChange }) => {
     handleItemDoubleClick,
   ]);
 
+  // Handle cursor state during shutdown
+  useEffect(() => {
+    if (isShuttingDown && shutdownStage < 2) {
+      document.body.style.cursor = getCursorStyle("wait");
+    }
+  }, [isShuttingDown, shutdownStage]);
+
   // Memoize minimized window IDs for faster lookup
   const minimizedWindowIds = useMemo(
     () => new Set(minimizedWindows.map((mw) => mw.id)),
@@ -223,9 +231,8 @@ const Desktop = memo(({ onFullScreenChange }) => {
         />
       )}
       <div
-        className={`desktop ${loadingWindows.size > 0 ? "loading" : ""} ${
-          shutdownStage === 1 ? "shutting-down" : ""
-        } ${hasFullScreenWindow ? "fullscreen" : ""}`}
+        className={`desktop ${loadingWindows.size > 0 ? "loading" : ""} ${shutdownStage === 1 ? "shutting-down" : ""
+          } ${hasFullScreenWindow ? "fullscreen" : ""}`}
         onClick={handleDesktopClick}
         onDragOver={(e) => e.preventDefault()}
         role="main"
@@ -244,9 +251,8 @@ const Desktop = memo(({ onFullScreenChange }) => {
               onDoubleClick={() => handleItemDoubleClick(item.id, item.label)}
               isSelected={selectedIcon === item.id}
               onSelect={setSelectedIcon}
-              aria-label={`${item.label} ${
-                item.type === "folder" ? "folder" : "application"
-              }`}
+              aria-label={`${item.label} ${item.type === "folder" ? "folder" : "application"
+                }`}
               draggable={true}
               onDragStart={(e) => {
                 e.dataTransfer.setData(

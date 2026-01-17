@@ -113,7 +113,7 @@ const LoadingScreen = ({
       return () => {
         document.removeEventListener("keydown", handleKeyPress);
         document.removeEventListener("touchstart", handleTouchStart);
-        // Don't restore cursor here - it will be restored when loading is completely done
+        restoreCursor();
       };
     }
   }, [mode, onSkip]);
@@ -175,7 +175,7 @@ const LoadingScreen = ({
         "  Linter Module .......... 9.25.0 [OK] ",
         "  Static Deploy Util ..... 6.3.0  [OK] ",
         "",
-        "Starting VisiCore ... ",
+        "Starting GOMI 3 ... ",
       ];
       const delays = [850, 650, 1200, 750, 900, 550, 1000, 800, 2000];
 

@@ -114,6 +114,8 @@ const Window = memo(
       return () => window.removeEventListener("keydown", handleKeyDown);
     }, [isFullScreenActive, id, onClose, onFullScreenChange]);
 
+    const [windowDimensions, setWindowDimensions] = useState({ width: 0, height: 0 });
+
     const handlePositionChange = useCallback(
       (_, newPos) => {
         if (!isMaximized && !isMobile && !isFullScreenActive)
@@ -124,14 +126,25 @@ const Window = memo(
 
     const {
       elementRef,
+      isDragging,
+      previewPosition,
       handleMouseDown,
       handleTouchStart: dragTouchStart,
-    } = useDragDrop(id, position, handlePositionChange, onFocus);
+    } = useDragDrop(id, position, handlePositionChange, onFocus, { useOutline: true });
+
+    // Track dimensions when dragging starts
+    useEffect(() => {
+      if (isDragging && elementRef.current) {
+        const rect = elementRef.current.getBoundingClientRect();
+        setWindowDimensions({ width: rect.width, height: rect.height });
+      }
+    }, [isDragging, elementRef]);
 
     const handleTitleBarMouseDown = useCallback(
       (e) => {
         if (
           !e.target.closest(".window-title-bar") ||
+          e.target.closest(".control-button") ||
           isMaximized ||
           isMobile ||
           isFullScreenActive
@@ -146,6 +159,7 @@ const Window = memo(
       (e) => {
         if (
           !e.target.closest(".window-title-bar") ||
+          e.target.closest(".control-button") ||
           isMaximized ||
           isMobile ||
           isFullScreenActive
@@ -369,72 +383,86 @@ const Window = memo(
       left: isFullScreenActive
         ? 0
         : isMaximized || isMobile
-        ? 0
-        : `${position.x}px`,
+          ? 0
+          : `${position.x}px`,
       top: isFullScreenActive
         ? 0
         : isMaximized || isMobile
-        ? MENU_BAR_HEIGHT
-        : `${position.y}px`,
+          ? MENU_BAR_HEIGHT
+          : `${position.y}px`,
       width: isFullScreenActive
         ? "100vw"
         : isMaximized || isMobile
-        ? "100vw"
-        : "auto",
+          ? "100vw"
+          : "auto",
       height: isFullScreenActive
         ? "100vh"
         : isMaximized || isMobile
-        ? `calc(100vh - ${MENU_BAR_HEIGHT}px)`
-        : "auto",
+          ? `calc(100vh - ${MENU_BAR_HEIGHT}px)`
+          : "auto",
       zIndex: isFullScreenActive ? 10000 : zIndex,
       visibility: needsCentering ? "hidden" : "visible",
     };
 
     return (
-      <div
-        ref={elementRef}
-        className={`windows-window 
-      ${isFullScreenActive ? "fullscreen" : ""} 
-      ${isMaximized || isMobile ? "maximized" : ""} 
-      ${isFocused ? "focused" : ""}`}
-        style={windowStyle}
-        onMouseDown={handleTitleBarMouseDown}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={isFullScreenActive ? handleTouchEnd : undefined}
-      >
-        <div className="window-title-bar">
-          <span className="window-title">{title}</span>
-          <div className="window-controls">
-            <button
-              className="window-button control-button"
-              onClick={handleCloseClick}
-              title="Close Window"
-              aria-label="Close Window"
-            >
-              ×
-            </button>
-            {!isMobile && isMaximizable && !isFullScreenActive && (
+      <>
+        <div
+          ref={elementRef}
+          className={`windows-window 
+        ${isFullScreenActive ? "fullscreen" : ""} 
+        ${isMaximized || isMobile ? "maximized" : ""} 
+        ${isFocused ? "focused" : ""}
+        ${isDragging ? "dragging" : ""}`}
+          style={windowStyle}
+          onMouseDown={handleTitleBarMouseDown}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={isFullScreenActive ? handleTouchEnd : undefined}
+        >
+          <div className="window-title-bar">
+            <span className="window-title">{title}</span>
+            <div className="window-controls">
               <button
                 className="window-button control-button"
-                onClick={handleMaximizeClick}
-                title={isMaximized ? "Restore Window" : "Maximize Window"}
-                aria-label={isMaximized ? "Restore Window" : "Maximize Window"}
+                onClick={handleCloseClick}
+                title="Close Window"
+                aria-label="Close Window"
               >
-                •
+                ×
               </button>
-            )}
-            <button
-              className="window-button control-button"
-              onClick={handleMinimizeClick}
-              title="Minimize Window"
-              aria-label="Minimize Window"
-            >
-              -
-            </button>
+              {!isMobile && isMaximizable && !isFullScreenActive && (
+                <button
+                  className="window-button control-button"
+                  onClick={handleMaximizeClick}
+                  title={isMaximized ? "Restore Window" : "Maximize Window"}
+                  aria-label={isMaximized ? "Restore Window" : "Maximize Window"}
+                >
+                  •
+                </button>
+              )}
+              <button
+                className="window-button control-button"
+                onClick={handleMinimizeClick}
+                title="Minimize Window"
+                aria-label="Minimize Window"
+              >
+                -
+              </button>
+            </div>
           </div>
+          <div className="window-content">{children}</div>
         </div>
-        <div className="window-content">{children}</div>
-      </div>
+        {isDragging && !isMaximized && !isMobile && !isFullScreenActive && (
+          <div
+            className="window-outline"
+            style={{
+              left: `${previewPosition.x}px`,
+              top: `${previewPosition.y}px`,
+              width: `${windowDimensions.width}px`,
+              height: `${windowDimensions.height}px`,
+            }}
+          />
+        )}
+      </>
     );
   }
 );

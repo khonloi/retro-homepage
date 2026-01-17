@@ -3,9 +3,11 @@ import { useState, useRef, useEffect, useCallback } from "react";
 // Import the cursor file from assets
 import defaultCursor from "../assets/cursors/default_link.cur";
 
-export const useDragDrop = (id, position, onPositionChange, onSelect) => {
+export const useDragDrop = (id, position, onPositionChange, onSelect, options = {}) => {
+  const { useOutline = false } = options;
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [previewPosition, setPreviewPosition] = useState(position || { x: 0, y: 0 });
   const elementRef = useRef(null);
   const lastPositionRef = useRef(null);
   const requestRef = useRef(null);
@@ -20,13 +22,15 @@ export const useDragDrop = (id, position, onPositionChange, onSelect) => {
 
       setIsDragging(true);
       const rect = elementRef.current.getBoundingClientRect();
+      const currentPos = position || { x: 0, y: 0 };
+      setPreviewPosition(currentPos);
       setDragOffset({
         x: e.clientX - rect.left,
         y: e.clientY - rect.top,
       });
       e.preventDefault();
     },
-    [id, isAbsolutePositioned, onSelect]
+    [id, isAbsolutePositioned, onSelect, position]
   );
 
   const handleTouchStart = useCallback(
@@ -46,6 +50,8 @@ export const useDragDrop = (id, position, onPositionChange, onSelect) => {
 
       setIsDragging(true);
       const rect = elementRef.current.getBoundingClientRect();
+      const currentPos = position || { x: 0, y: 0 };
+      setPreviewPosition(currentPos);
       const touch = e.touches[0];
       setDragOffset({
         x: touch.clientX - rect.left,
@@ -53,7 +59,7 @@ export const useDragDrop = (id, position, onPositionChange, onSelect) => {
       });
       e.preventDefault();
     },
-    [id, isAbsolutePositioned, onSelect]
+    [id, isAbsolutePositioned, onSelect, position]
   );
 
   const updatePosition = useCallback(
@@ -81,16 +87,22 @@ export const useDragDrop = (id, position, onPositionChange, onSelect) => {
       const clampedY = Math.max(-EDGE_PADDING, Math.min(newY, maxY));
 
       const newPosition = { x: clampedX, y: clampedY };
+      
       if (
         !lastPositionRef.current ||
-        Math.abs(lastPositionRef.current.x - newPosition.x) > 1 ||
-        Math.abs(lastPositionRef.current.y - newPosition.y) > 1
+        Math.abs(lastPositionRef.current.x - newPosition.x) > 0.5 ||
+        Math.abs(lastPositionRef.current.y - newPosition.y) > 0.5
       ) {
         lastPositionRef.current = newPosition;
-        onPositionChange(id, newPosition);
+        
+        if (useOutline) {
+          setPreviewPosition(newPosition);
+        } else {
+          onPositionChange(id, newPosition);
+        }
       }
     },
-    [id, isDragging, isAbsolutePositioned, dragOffset, onPositionChange]
+    [id, isDragging, isAbsolutePositioned, dragOffset, onPositionChange, useOutline]
   );
 
   const handleMouseMove = useCallback(
@@ -121,12 +133,18 @@ export const useDragDrop = (id, position, onPositionChange, onSelect) => {
   );
 
   const handleDragEnd = useCallback(() => {
+    if (isDragging && useOutline && lastPositionRef.current) {
+      onPositionChange(id, lastPositionRef.current);
+    }
+    
     setIsDragging(false);
+    lastPositionRef.current = null;
+    
     if (requestRef.current) {
       cancelAnimationFrame(requestRef.current);
       requestRef.current = null;
     }
-  }, []);
+  }, [id, isDragging, onPositionChange, useOutline]);
 
   useEffect(() => {
     if (isDragging) {
@@ -160,6 +178,7 @@ export const useDragDrop = (id, position, onPositionChange, onSelect) => {
   return {
     elementRef,
     isDragging,
+    previewPosition,
     handleMouseDown,
     handleTouchStart,
     elementStyle: isAbsolutePositioned

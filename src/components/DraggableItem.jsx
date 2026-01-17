@@ -3,14 +3,14 @@ import React, { useState, useCallback, memo, useEffect, useRef } from 'react';
 import { useDragDrop } from '../hooks/useDragDrop';
 import { useContrastColor } from '../hooks/useContrastColor';
 
-const DraggableItem = memo(({ 
-  id, 
-  label, 
-  iconSrc, 
+const DraggableItem = memo(({
+  id,
+  label,
+  iconSrc,
   defaultIcon,
-  position, 
-  onPositionChange, 
-  onDoubleClick, 
+  position,
+  onPositionChange,
+  onDoubleClick,
   onSelect,
   isSelected,
   className,
@@ -19,26 +19,27 @@ const DraggableItem = memo(({
   onDragOver,
   onDragLeave,
   isDraggable = false,
-  onDragStart
+  onDragStart,
+  isFlashing = false
 }) => {
   // Provide default position if not specified (for grid items)
   const effectivePosition = position || null;
-  const effectiveOnPositionChange = position ? onPositionChange : () => {};
-  
+  const effectiveOnPositionChange = position ? onPositionChange : () => { };
+
   // State for drop target styling
   const [isDropTarget, setIsDropTarget] = useState(false);
-  
+
   // State for image loading
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  
+
   // Ref for the image element to check if it's already loaded (cached)
   const imageRef = useRef(null);
-  
+
   // Reset loading state when image source changes
   const currentImageSrc = iconSrc || defaultIcon;
   useEffect(() => {
     setIsImageLoaded(false);
-    
+
     // Check if image is already loaded from cache
     // This handles the case where the browser loads cached images synchronously
     // Use setTimeout to ensure the DOM has updated with the new src
@@ -51,14 +52,14 @@ const DraggableItem = memo(({
         }
       }
     };
-    
+
     // Check immediately and also after a short delay to handle race conditions
     checkImageLoaded();
     const timeoutId = setTimeout(checkImageLoaded, 0);
-    
+
     return () => clearTimeout(timeoutId);
   }, [currentImageSrc]);
-  
+
   // Get drag-drop functionality from hook
   const { elementRef, handleMouseDown, handleTouchStart, elementStyle } = useDragDrop(
     id, effectivePosition, effectiveOnPositionChange, onSelect
@@ -86,7 +87,7 @@ const DraggableItem = memo(({
   const handleDrop = useCallback((e) => {
     e.preventDefault();
     setIsDropTarget(false);
-    
+
     try {
       const draggedData = e.dataTransfer.getData('text/plain');
       if (draggedData && onDrop) {
@@ -175,17 +176,17 @@ const DraggableItem = memo(({
   return (
     <div {...itemProps}>
       <div className="item-image">
-        <img 
+        <img
           ref={imageRef}
-          src={iconSrc || defaultIcon} 
+          src={iconSrc || defaultIcon}
           alt={label}
           onLoad={handleImageLoad}
           onError={handleImageError}
         />
       </div>
-      <div 
+      <div
         className="item-label"
-        style={{ color: textColor }}
+        style={{ color: (isSelected || isFlashing) ? undefined : textColor }}
       >
         {label}
       </div>
