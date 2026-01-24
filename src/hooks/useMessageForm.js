@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import emailjs from '@emailjs/browser';
-import dingSound from '../utilities/Message/ding.mp3';
-import chordSound from '../utilities/Message/chord.mp3';
+import dingSound from '../features/Message/ding.mp3';
+import chordSound from '../features/Message/chord.mp3';
 
 // Validation constants
 const VALIDATION_RULES = {

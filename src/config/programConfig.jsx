@@ -1,8 +1,9 @@
-import About from "../utilities/About/About";
-import Contact from "../utilities/Contact/Contact";
-import Welcome from "../utilities/Welcome/Welcome";
-import Message from "../utilities/Message/Message";
-import StarShow from "../utilities/StarShow/StarShow";
+import About from "../features/About/About";
+import Contact from "../features/Contact/Contact";
+import Welcome from "../features/Welcome/Welcome";
+import Message from "../features/Message/Message";
+import StarShow from "../features/StarShow/StarShow";
+import VideoPlayer from "../features/VideoPlayer/VideoPlayer";
 
 // Import your icons
 import logoIcon from "../assets/icons/Tree.ico";
@@ -13,7 +14,7 @@ import calculatorIcon from "../assets/icons/Microsoft Windows 3 Calculator.ico";
 import calendarIcon from "../assets/icons/Microsoft Windows 3 Calendar.ico";
 import clockIcon from "../assets/icons/Microsoft Windows 3 Clock.ico";
 import monaLisaIcon from "../assets/icons/Microsoft Windows 3 Mona Lisa.ico";
-import videoIcon from "../assets/icons/Microsoft Windows 3 Media Player.ico";
+import mediaIcon from "../assets/icons/Microsoft Windows 3 Media Player.ico";
 import newsIcon from "../assets/icons/Microsoft Windows 3 Newspaper.ico";
 import internetIcon from "../assets/icons/Microsoft Windows 3 International.ico";
 import cameraIcon from "../assets/icons/Microsoft Windows 3 Camera.ico";
@@ -23,9 +24,16 @@ import briefcaseIcon from "../assets/icons/Microsoft Windows 3 Briefcase.ico";
 import computerIcon from "../assets/icons/Microsoft Windows 3 Computer.ico";
 import faxIcon from "../assets/icons/Microsoft Windows 3 Fax Machine.ico";
 import docIcon from "../assets/icons/Microsoft Windows 3 Documents.ico";
-import aboutIcon from "../assets/icons/Microsoft Windows 3 Post-It.ico";
+import noteIcon from "../assets/icons/Microsoft Windows 3 Post-It.ico";
 import gashIcon from "../assets/icons/GASH.ico";
-import winAmpIcon from "../assets/icons/WinAmp.ico";
+import cassetteIcon from "../assets/icons/Microsoft Windows 3 Cassette.ico";
+import plannerIcon from "../assets/icons/Microsoft Windows 3 ClipBook Viewer.ico";
+import compressorIcon from "../assets/icons/Microsoft Windows 3 Compression.ico";
+import safeIcon from "../assets/icons/Microsoft Windows 3 Safe.ico";
+import schedulerIcon from "../assets/icons/Microsoft Windows 3 Schedule.ico";
+import recorderIcon from "../assets/icons/Microsoft Windows 3 Sound Recorder.ico";
+import minesweeperIcon from "../assets/icons/Microsoft Windows 3 Minesweeper.ico";
+import solitaireIcon from "../assets/icons/Microsoft Windows 3 Solitaire.ico";
 
 // Unified desktop items configuration
 export const desktopItems = [
@@ -135,7 +143,7 @@ export const desktopItems = [
   {
     id: "welcome",
     label: "Welcome",
-    iconSrc: aboutIcon,
+    iconSrc: noteIcon,
     type: "icon",
     isMaximizable: false,
     startup: true,
@@ -169,17 +177,16 @@ export const desktopItems = [
         isMaximizable: false,
       },
       {
-        id: "canvas",
-        label: "Canvas",
-        iconSrc: paintIcon,
-        type: "icon",
-        isMaximizable: true,
-        isFullScreen: true, // Enable full-screen for Canvas
-      },
-      {
         id: "clock",
         label: "Clock",
         iconSrc: clockIcon,
+        type: "icon",
+        isMaximizable: false,
+      },
+      {
+        id: "compressor",
+        label: "Compressor",
+        iconSrc: compressorIcon,
         type: "icon",
         isMaximizable: false,
       },
@@ -205,72 +212,94 @@ export const desktopItems = [
         isMaximizable: true,
       },
       {
-        id: "photo",
-        label: "Photo",
-        iconSrc: monaLisaIcon,
+        id: "paint",
+        label: "Paint",
+        iconSrc: paintIcon,
         type: "icon",
         isMaximizable: true,
+        isFullScreen: true,
+      },
+      {
+        id: "planner",
+        label: "Planner",
+        iconSrc: plannerIcon,
+        type: "icon",
+        isMaximizable: false,
+      },
+      {
+        id: "recorder",
+        label: "Recorder",
+        iconSrc: recorderIcon,
+        type: "icon",
+        isMaximizable: false,
+      },
+      {
+        id: "safe",
+        label: "Safe",
+        iconSrc: safeIcon,
+        type: "icon",
+        isMaximizable: false,
+      },
+      {
+        id: "scheduler",
+        label: "Scheduler",
+        iconSrc: schedulerIcon,
+        type: "icon",
+        isMaximizable: false,
       },
       {
         id: "video",
-        label: "Media",
-        iconSrc: videoIcon,
+        label: "Video Player",
+        iconSrc: mediaIcon,
         type: "icon",
         isMaximizable: true,
       },
     ],
   },
   {
-    id: "picture",
-    label: "Picture",
+    id: "games",
+    label: "Games",
     iconSrc: folderIcon,
     type: "folder",
     positionRight: true,
-    contents: [{
-      id: "image1",
-      label: "Ascent.jpg",
-      iconSrc: monaLisaIcon,
-      type: "icon",
-      isMaximizable: true,
-      link: "https://static.wikitide.net/windowswallpaperwiki/6/63/Ascent.jpg",
-    },
-    {
-      id: "image2",
-      label: "Autumn.jpg",
-      iconSrc: monaLisaIcon,
-      type: "icon",
-      isMaximizable: true,
-      link: "https://static.wikitide.net/windowswallpaperwiki/a/aa/Autumn.jpg",
-    },
-    {
-      id: "image3",
-      label: "Azul.jpg",
-      iconSrc: monaLisaIcon,
-      type: "icon",
-      isMaximizable: true,
-      link: "https://static.wikitide.net/windowswallpaperwiki/a/a4/Azul.jpg",
-    }, {
-      id: "image4",
-      label: "Bliss.jpg",
-      iconSrc: monaLisaIcon,
-      type: "icon",
-      isMaximizable: true,
-      link: "https://static.wikitide.net/windowswallpaperwiki/c/cf/Bliss.jpg",
-    },
-    {
-      id: "image5",
-      label: "Follow.jpg",
-      iconSrc: monaLisaIcon,
-      type: "icon",
-      isMaximizable: true,
-      link: "https://static.wikitide.net/windowswallpaperwiki/5/53/Follow.jpg",
-    },],
+    contents: [
+      {
+        id: "minesweeper",
+        label: "Minesweeper",
+        iconSrc: minesweeperIcon,
+        type: "icon",
+        isMaximizable: false,
+      },
+      {
+        id: "solitaire",
+        label: "Solitaire",
+        iconSrc: solitaireIcon,
+        type: "icon",
+        isMaximizable: false,
+      },
+    ],
   },
   {
-    id: "winamp",
-    label: "WinAmp",
-    iconSrc: winAmpIcon,
+    id: "photo",
+    label: "Photo",
+    iconSrc: monaLisaIcon,
     type: "icon",
+    isMaximizable: true,
+    positionRight: true,
+  },
+  {
+    id: "music",
+    label: "Music Player",
+    iconSrc: cassetteIcon,
+    type: "icon",
+    positionRight: true,
+  },
+  {
+    id: "video",
+    label: "Video Player",
+    iconSrc: mediaIcon,
+    type: "icon",
+    isMaximizable: true,
     positionRight: true,
   },
   {
@@ -289,6 +318,7 @@ const windowContentRegistry = {
   welcome: Welcome,
   message: Message,
   starshow: StarShow,
+  video: VideoPlayer,
 };
 
 // Default fallback component

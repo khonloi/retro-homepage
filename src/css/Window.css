@@ -29,7 +29,6 @@
 }
 
 .window-title {
-  padding: 4px;
   font-weight: bold;
   position: absolute;
   left: 50%;
@@ -59,11 +58,11 @@
 }
 
 .control-button {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   font-weight: normal;
   font-family: var(--button-font);
-  font-size: 30px;
+  font-size: 32px;
 }
 
 .program-button {
@@ -182,12 +181,17 @@
 /* Touch-friendly improvements */
 @media (max-width: 768px) {
   .window-button.control-button {
-    min-width: 32px;
-    min-height: 32px;
-    font-size: 32px;
+    min-width: 34px;
+    min-height: 34px;
+    font-size: 34px;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .program-button {
+    width: 6.125rem;
+    height: 2.125rem;
   }
 }
 

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Desktop from './components/Desktop';
 // import ScreensaverManager from './components/ScreensaverManager';
-import { setCursorVariables } from './utilities/cursors';
+import { setCursorVariables } from './data/cursors';
 import './App.css';
 
 function App() {

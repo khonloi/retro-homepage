@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "../css/LoadingScreen.css";
-import { getCursorStyle } from "../utilities/cursors";
+import { getCursorStyle } from "../data/cursors";
 import startupCard from "../assets/images/startup-card-1.png";
 
 /**

@@ -1,7 +1,7 @@
 // src/hooks/useLoadingScreen.js
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { getCursorStyle } from '../utilities/cursors';
-import { playSound } from '../utilities/sounds';
+import { getCursorStyle } from '../data/cursors';
+import { playSound } from '../data/sounds';
 
 export const useLoadingScreen = () => {
   const [isLoading, setIsLoading] = useState(true);

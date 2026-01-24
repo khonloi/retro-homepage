@@ -1,40 +1,10 @@
 import React, { useState, useMemo, memo, useCallback } from "react";
 import "./About.css";
-import folderIcon from "./Microsoft Windows 3 Folder.ico";
-import folderOpenIcon from "./Microsoft Windows 3 Folder Open Document.ico";
-import docIcon from "./Microsoft Windows 3 Documents.ico";
+import folderIcon from "../../assets/icons/Microsoft Windows 3 Folder.ico";
+import folderOpenIcon from "../../assets/icons/Microsoft Windows 3 Folder Open Document.ico";
+import docIcon from "../../assets/icons/Microsoft Windows 3 Documents.ico";
 import portraitImage from "./portrait.jpg";
-
-// Skills data structure for better maintainability
-const SKILLS_DATA = [
-  {
-    id: "frontend",
-    title: "Frontend Development",
-    skills: [
-      "HTML5 / CSS3",
-      "JavaScript (ES6) / TypeScript",
-      "React.js",
-      "Bootstrap / SCSS / Tailwind CSS",
-      "Responsive Design",
-      "Animation",
-    ],
-  },
-  {
-    id: "backend",
-    title: "Backend Development",
-    skills: [
-      "Node.js / Express.js",
-      "NestJS",
-      "Socket.IO",
-      "RESTful APIs / JWT",
-    ],
-  },
-  {
-    id: "tools",
-    title: "Development Tools",
-    skills: ["Git / GitHub", "Vite / Webpack", "Postman"],
-  },
-];
+import { SKILLS_DATA } from "../../data/skills";
 
 // Initial folder states
 const INITIAL_FOLDER_STATES = SKILLS_DATA.reduce((acc, folder) => {
@@ -163,10 +133,6 @@ const About = memo(() => {
                 <li>
                   Designed and deployed RESTful APIs with JWT authentication,
                   strengthening security protocols.
-                </li>
-                <li>
-                  Assisted in deploying applications on Heroku, contributing to
-                  a <strong>25%</strong> increase in uptime.
                 </li>
                 <li>
                   Engaged in agile workflows, including sprint planning,

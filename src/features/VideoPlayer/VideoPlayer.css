@@ -1,0 +1,165 @@
+.video-player-container,
+.video-player-container * {
+    box-sizing: border-box;
+}
+
+.video-player-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--windows-bg);
+    padding: 0;
+}
+
+.video-area {
+    width: 30rem;
+    height: 22.5rem;
+    max-width: calc(100% - 16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--windows-black);
+    border: 2px inset #fff;
+    overflow: hidden;
+    position: relative;
+    margin: 8px auto 0;
+}
+
+.video-display-wrapper {
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-element {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.default-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.center-icon {
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+}
+
+.video-controls {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.seek-bar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.seek-bar {
+    width: 100%;
+    height: 24px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--windows-bg);
+    cursor: pointer;
+    margin: 0;
+}
+
+.seek-bar::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 14px;
+    cursor: pointer;
+    background: #c0c4c8;
+    border: 1px inset #808080;
+}
+
+.seek-bar::-webkit-slider-thumb {
+    height: 20px;
+    width: 12px;
+    background-color: var(--windows-bg);
+    border-right: 2px solid var(--button-border-dark);
+    border-bottom: 2px solid var(--button-border-dark);
+    border-left: 2px solid var(--button-border-light);
+    border-top: 2px solid var(--button-border-light);
+    box-shadow: 0 0 0 1px var(--windows-black);
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -4px;
+    cursor: pointer;
+}
+
+.seek-bar::-moz-range-track {
+    width: 100%;
+    height: 14px;
+    cursor: pointer;
+    background: #c0c4c8;
+    border: 1px inset #808080;
+}
+
+.seek-bar::-moz-range-thumb {
+    height: 20px;
+    width: 12px;
+    background-color: var(--windows-bg);
+    border-right: 2px solid var(--button-border-dark);
+    border-bottom: 2px solid var(--button-border-dark);
+    border-left: 2px solid var(--button-border-light);
+    border-top: 2px solid var(--button-border-light);
+    box-shadow: 0 0 0 1px var(--windows-black);
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.controls-bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.buttons-section {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.time-display {
+    font-family: var(--main-font);
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--windows-black);
+    white-space: nowrap;
+}
+
+/* Base styles for buttons are already in Window.css, so we just use those classes */
+
+@media (max-width: 600px) {
+    .video-player-container {
+        padding: 0;
+    }
+
+    .video-area {
+        margin: 4px auto 0;
+    }
+
+    .time-display {
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .center-icon {
+        width: 48px;
+        height: 48px;
+    }
+}

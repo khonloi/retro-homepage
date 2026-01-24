@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useRef } from 'react';
 import { desktopItems } from "../config/programConfig";
-import { playSound } from '../utilities/sounds';
+import { playSound } from '../data/sounds';
 
 // Flatten desktop items for faster lookup - created at module level
 const flattenDesktopItems = (items) => {
